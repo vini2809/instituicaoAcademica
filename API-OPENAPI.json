@@ -1,0 +1,3887 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API do Sistema Academico",
+    "version": "1.0.0",
+    "description": "API REST para instituicoes, cursos, matriculas, usuarios e entidades academicas."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Autenticacao"
+    },
+    {
+      "name": "Alunos"
+    },
+    {
+      "name": "Avaliacoes"
+    },
+    {
+      "name": "Cursos"
+    },
+    {
+      "name": "Espacos fisicos"
+    },
+    {
+      "name": "Instituicoes"
+    },
+    {
+      "name": "Materias"
+    },
+    {
+      "name": "Matriculas"
+    },
+    {
+      "name": "Professores"
+    },
+    {
+      "name": "Turmas"
+    },
+    {
+      "name": "Usuarios"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/auth": {
+      "post": {
+        "tags": [
+          "Autenticacao"
+        ],
+        "summary": "Iniciar sessao",
+        "description": "Autentica usuario ativo e retorna um JWT.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Credenciais"
+              },
+              "example": {
+                "email": "aluno@exemplo.com",
+                "senha": "senha-segura"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Autenticacao realizada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "token"
+                  ],
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "description": "JWT assinado com algoritmo HS256."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "description": "Credenciais invalidas ou usuario inativo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      }
+    },
+    "/alunos": {
+      "get": {
+        "tags": [
+          "Alunos"
+        ],
+        "summary": "Listar alunos",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista paginada de alunos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Aluno"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Alunos"
+        ],
+        "summary": "Cadastrar aluno",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AlunoInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Aluno criado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Aluno"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "409": {
+            "description": "Ja existe aluno com o CPF informado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      }
+    },
+    "/alunos/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/id"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Alunos"
+        ],
+        "summary": "Consultar aluno",
+        "responses": {
+          "200": {
+            "description": "Aluno encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Aluno"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "404": {
+            "description": "Aluno nao encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Alunos"
+        ],
+        "summary": "Atualizar parcialmente aluno",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AlunoPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Aluno atualizado; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Aluno nao encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Ja existe aluno com o CPF informado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Alunos"
+        ],
+        "summary": "Substituir dados do aluno",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AlunoInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Aluno atualizado; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Aluno nao encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Ja existe aluno com o CPF informado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Alunos"
+        ],
+        "summary": "Excluir aluno",
+        "responses": {
+          "204": {
+            "description": "Aluno excluido; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Aluno nao encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      }
+    },
+    "/avaliacoes": {
+      "get": {
+        "tags": [
+          "Avaliacoes"
+        ],
+        "summary": "Listar avaliacoes",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista paginada de avaliacoes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Avaliacao"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Avaliacoes"
+        ],
+        "summary": "Cadastrar avaliacao",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AvaliacaoInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Avaliacao criada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Avaliacao"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Aluno ou turma nao encontrados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      }
+    },
+    "/avaliacoes/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/id"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Avaliacoes"
+        ],
+        "summary": "Consultar avaliacao",
+        "responses": {
+          "200": {
+            "description": "Avaliacao encontrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Avaliacao"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "404": {
+            "description": "Avaliacao nao encontrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Avaliacoes"
+        ],
+        "summary": "Atualizar parcialmente avaliacao",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AvaliacaoPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Avaliacao atualizada; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Avaliacao, aluno ou turma nao encontrados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Avaliacoes"
+        ],
+        "summary": "Substituir dados da avaliacao",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AvaliacaoInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Avaliacao atualizada; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Avaliacao, aluno ou turma nao encontrados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Avaliacoes"
+        ],
+        "summary": "Excluir avaliacao",
+        "responses": {
+          "204": {
+            "description": "Avaliacao excluida; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Avaliacao nao encontrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      }
+    },
+    "/cursos": {
+      "get": {
+        "tags": [
+          "Cursos"
+        ],
+        "summary": "Listar cursos",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista paginada de cursos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Curso"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Cursos"
+        ],
+        "summary": "Cadastrar curso",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CursoInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Curso criado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Curso"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Instituicao ou espaco fisico nao encontrados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      }
+    },
+    "/cursos/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/id"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Cursos"
+        ],
+        "summary": "Consultar curso",
+        "responses": {
+          "200": {
+            "description": "Curso encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Curso"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "404": {
+            "description": "Curso nao encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Cursos"
+        ],
+        "summary": "Atualizar parcialmente curso",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CursoPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Curso atualizado; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Curso, instituicao ou espaco fisico nao encontrados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Cursos"
+        ],
+        "summary": "Substituir dados do curso",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CursoInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Curso atualizado; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Curso, instituicao ou espaco fisico nao encontrados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Cursos"
+        ],
+        "summary": "Excluir curso",
+        "responses": {
+          "204": {
+            "description": "Curso excluido; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Curso nao encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      }
+    },
+    "/espacos_fisicos": {
+      "get": {
+        "tags": [
+          "Espacos fisicos"
+        ],
+        "summary": "Listar espacos fisicos",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista paginada de espacos fisicos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EspacoFisico"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Espacos fisicos"
+        ],
+        "summary": "Cadastrar espaco fisico",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EspacoFisicoInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Espaco fisico criado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EspacoFisico"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Instituicao nao encontrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      }
+    },
+    "/espacos_fisicos/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/id"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Espacos fisicos"
+        ],
+        "summary": "Consultar espaco fisico",
+        "responses": {
+          "200": {
+            "description": "Espaco fisico encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EspacoFisico"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "404": {
+            "description": "Espaco fisico nao encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Espacos fisicos"
+        ],
+        "summary": "Atualizar parcialmente espaco fisico",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EspacoFisicoPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Espaco fisico atualizado; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Espaco fisico ou instituicao nao encontrados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Espacos fisicos"
+        ],
+        "summary": "Substituir dados do espaco fisico",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EspacoFisicoInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Espaco fisico atualizado; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Espaco fisico ou instituicao nao encontrados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Espacos fisicos"
+        ],
+        "summary": "Excluir espaco fisico",
+        "responses": {
+          "204": {
+            "description": "Espaco fisico excluido; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Espaco fisico nao encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      }
+    },
+    "/instituicoes": {
+      "get": {
+        "tags": [
+          "Instituicoes"
+        ],
+        "summary": "Listar instituicoes",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista paginada de instituicoes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Instituicao"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Instituicoes"
+        ],
+        "summary": "Cadastrar instituicao",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InstituicaoInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Instituicao criada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Instituicao"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "409": {
+            "description": "Ja existe instituicao com o CNPJ informado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      }
+    },
+    "/instituicoes/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/id"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Instituicoes"
+        ],
+        "summary": "Consultar instituicao",
+        "responses": {
+          "200": {
+            "description": "Instituicao encontrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Instituicao"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "404": {
+            "description": "Instituicao nao encontrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Instituicoes"
+        ],
+        "summary": "Atualizar parcialmente instituicao",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InstituicaoPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Instituicao atualizada; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Instituicao nao encontrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Ja existe instituicao com o CNPJ informado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Instituicoes"
+        ],
+        "summary": "Substituir dados da instituicao",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InstituicaoInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Instituicao atualizada; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Instituicao nao encontrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Ja existe instituicao com o CNPJ informado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Instituicoes"
+        ],
+        "summary": "Excluir instituicao",
+        "responses": {
+          "204": {
+            "description": "Instituicao excluida; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Instituicao nao encontrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      }
+    },
+    "/materias": {
+      "get": {
+        "tags": [
+          "Materias"
+        ],
+        "summary": "Listar materias",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista paginada de materias.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Materia"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Materias"
+        ],
+        "summary": "Cadastrar materia",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MateriaInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Materia criada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Materia"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Curso ou materia pre-requisito nao encontrados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      }
+    },
+    "/materias/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/id"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Materias"
+        ],
+        "summary": "Consultar materia",
+        "responses": {
+          "200": {
+            "description": "Materia encontrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Materia"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "404": {
+            "description": "Materia nao encontrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Materias"
+        ],
+        "summary": "Atualizar parcialmente materia",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MateriaPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Materia atualizada; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Materia, curso ou materia pre-requisito nao encontrados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Materias"
+        ],
+        "summary": "Substituir dados da materia",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MateriaInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Materia atualizada; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Materia, curso ou materia pre-requisito nao encontrados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Materias"
+        ],
+        "summary": "Excluir materia",
+        "responses": {
+          "204": {
+            "description": "Materia excluida; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Materia nao encontrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      }
+    },
+    "/matriculas": {
+      "get": {
+        "tags": [
+          "Matriculas"
+        ],
+        "summary": "Listar matriculas",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista paginada de matriculas.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Matricula"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Matriculas"
+        ],
+        "summary": "Cadastrar matricula",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MatriculaInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Matricula criada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Matricula"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Aluno ou curso nao encontrados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      }
+    },
+    "/matriculas/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/id"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Matriculas"
+        ],
+        "summary": "Consultar matricula",
+        "responses": {
+          "200": {
+            "description": "Matricula encontrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Matricula"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "404": {
+            "description": "Matricula nao encontrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Matriculas"
+        ],
+        "summary": "Atualizar parcialmente matricula",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MatriculaPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Matricula atualizada; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Matricula, aluno ou curso nao encontrados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Matriculas"
+        ],
+        "summary": "Substituir dados da matricula",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MatriculaInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Matricula atualizada; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Matricula, aluno ou curso nao encontrados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Matriculas"
+        ],
+        "summary": "Excluir matricula",
+        "responses": {
+          "204": {
+            "description": "Matricula excluida; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Matricula nao encontrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      }
+    },
+    "/professores": {
+      "get": {
+        "tags": [
+          "Professores"
+        ],
+        "summary": "Listar professores",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista paginada de professores.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Professor"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Professores"
+        ],
+        "summary": "Cadastrar professor",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfessorInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Professor criado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Professor"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Instituicao nao encontrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Ja existe professor com o CPF informado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      }
+    },
+    "/professores/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/id"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Professores"
+        ],
+        "summary": "Consultar professor",
+        "responses": {
+          "200": {
+            "description": "Professor encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Professor"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "404": {
+            "description": "Professor nao encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Professores"
+        ],
+        "summary": "Atualizar parcialmente professor",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfessorPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Professor atualizado; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Professor ou instituicao nao encontrados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Ja existe professor com o CPF informado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Professores"
+        ],
+        "summary": "Substituir dados do professor",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProfessorInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Professor atualizado; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Professor ou instituicao nao encontrados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Ja existe professor com o CPF informado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Professores"
+        ],
+        "summary": "Excluir professor",
+        "responses": {
+          "204": {
+            "description": "Professor excluido; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Professor nao encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      }
+    },
+    "/turmas": {
+      "get": {
+        "tags": [
+          "Turmas"
+        ],
+        "summary": "Listar turmas",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista paginada de turmas.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Turma"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Turmas"
+        ],
+        "summary": "Cadastrar turma",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TurmaInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Turma criada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Turma"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Professor ou materia nao encontrados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      }
+    },
+    "/turmas/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/id"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Turmas"
+        ],
+        "summary": "Consultar turma",
+        "responses": {
+          "200": {
+            "description": "Turma encontrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Turma"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "404": {
+            "description": "Turma nao encontrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Turmas"
+        ],
+        "summary": "Atualizar parcialmente turma",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TurmaPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Turma atualizada; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Turma, professor ou materia nao encontrados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Turmas"
+        ],
+        "summary": "Substituir dados da turma",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TurmaInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Turma atualizada; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Turma, professor ou materia nao encontrados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Turmas"
+        ],
+        "summary": "Excluir turma",
+        "responses": {
+          "204": {
+            "description": "Turma excluida; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Turma nao encontrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      }
+    },
+    "/usuarios": {
+      "get": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Listar usuarios",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/offset"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista paginada de usuarios sem senhaHash.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Usuario"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Cadastrar usuario",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsuarioInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuario criado (senhaHash nao e retornado).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "409": {
+            "description": "Ja existe usuario com o email informado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      }
+    },
+    "/usuarios/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/id"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Consultar usuario",
+        "responses": {
+          "200": {
+            "description": "Usuario encontrado sem senhaHash.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "404": {
+            "description": "Usuario nao encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Atualizar parcialmente usuario",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsuarioPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Usuario atualizado; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Usuario nao encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Ja existe usuario com o email informado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Substituir dados do usuario",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsuarioInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Usuario atualizado; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Usuario nao encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Ja existe usuario com o email informado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Excluir usuario",
+        "responses": {
+          "204": {
+            "description": "Usuario excluido; sem corpo."
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "401": {
+            "$ref": "#/components/responses/ErroAutenticacao"
+          },
+          "403": {
+            "$ref": "#/components/responses/ErroPermissao"
+          },
+          "404": {
+            "description": "Usuario nao encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "parameters": {
+      "id": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Identificador inteiro positivo.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        }
+      },
+      "offset": {
+        "name": "offset",
+        "in": "query",
+        "required": false,
+        "description": "Quantidade de registros a ignorar.",
+        "schema": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647,
+          "default": 0
+        }
+      },
+      "limit": {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Maximo de registros retornados.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
+        }
+      }
+    },
+    "responses": {
+      "ErroValidacao": {
+        "description": "Entrada invalida, ID invalido ou campos desconhecidos; tambem ocorre em PATCH vazio.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Erro"
+            },
+            "example": {
+              "error": "Informe ao menos um campo para atualizar"
+            }
+          }
+        }
+      },
+      "ErroAutenticacao": {
+        "description": "Token ausente, invalido ou expirado.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Erro"
+            },
+            "example": {
+              "error": "Token de autenticacao nao informado"
+            }
+          }
+        }
+      },
+      "ErroPermissao": {
+        "description": "Usuario autenticado sem permissao para a operacao.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Erro"
+            },
+            "example": {
+              "erro": "Voce nao tem permissao para acessar esta funcao"
+            }
+          }
+        }
+      },
+      "ErroInterno": {
+        "description": "Erro interno nao tratado.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Erro"
+            },
+            "example": {
+              "error": "Erro interno do servidor"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Credenciais": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "email",
+          "senha"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 100
+          },
+          "senha": {
+            "type": "string"
+          }
+        }
+      },
+      "Erro": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "erro": {
+            "type": "string"
+          }
+        }
+      },
+      "Status": {
+        "type": "string",
+        "enum": [
+          "ativo",
+          "inativo"
+        ]
+      },
+      "Permissao": {
+        "type": "string",
+        "enum": [
+          "aluno",
+          "professor",
+          "administrador"
+        ]
+      },
+      "SituacaoMatricula": {
+        "type": "string",
+        "enum": [
+          "finalizada",
+          "em curso",
+          "trancada",
+          "desistente"
+        ]
+      },
+      "Obrigatoriedade": {
+        "type": "string",
+        "enum": [
+          "obrigatorio",
+          "optativa"
+        ]
+      },
+      "DiaDaSemana": {
+        "type": "string",
+        "enum": [
+          "segunda-feira",
+          "terça-feira",
+          "quarta-feira",
+          "quinta-feira",
+          "sexta-feira",
+          "sábado",
+          "domingo"
+        ]
+      },
+      "Aluno": {
+        "type": "object",
+        "required": [
+          "id",
+          "nome",
+          "cpf",
+          "dataDeNascimento",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nome": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "cpf": {
+            "type": "string",
+            "description": "CPF valido com 11 digitos sem pontuacao.",
+            "pattern": "^[0-9]{11}$"
+          },
+          "dataDeNascimento": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data ISO; deve representar pessoa maior de 18 anos."
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          }
+        }
+      },
+      "AlunoInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "nome",
+          "cpf",
+          "dataDeNascimento"
+        ],
+        "properties": {
+          "nome": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "cpf": {
+            "type": "string",
+            "description": "CPF valido com 11 digitos sem pontuacao.",
+            "pattern": "^[0-9]{11}$"
+          },
+          "dataDeNascimento": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Deve representar pessoa maior de 18 anos."
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          }
+        }
+      },
+      "AlunoPatch": {
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "nome": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "cpf": {
+            "type": "string",
+            "pattern": "^[0-9]{11}$"
+          },
+          "dataDeNascimento": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          }
+        }
+      },
+      "Avaliacao": {
+        "type": "object",
+        "required": [
+          "id",
+          "idAluno",
+          "idTurma",
+          "nota"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "idAluno": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "idTurma": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "nota": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10
+          }
+        }
+      },
+      "AvaliacaoInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "idAluno",
+          "idTurma",
+          "nota"
+        ],
+        "properties": {
+          "idAluno": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "idTurma": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "nota": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10
+          }
+        }
+      },
+      "AvaliacaoPatch": {
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "idAluno": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "idTurma": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "nota": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10
+          }
+        }
+      },
+      "Curso": {
+        "type": "object",
+        "required": [
+          "id",
+          "nome",
+          "descricao",
+          "cargaHoraria",
+          "quantidadeDeSemestres",
+          "idInstituicao",
+          "idEspacoFisico",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nome": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 100
+          },
+          "descricao": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 200
+          },
+          "cargaHoraria": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "quantidadeDeSemestres": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "idInstituicao": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "idEspacoFisico": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          }
+        }
+      },
+      "CursoInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "nome",
+          "descricao",
+          "cargaHoraria",
+          "quantidadeDeSemestres",
+          "idInstituicao",
+          "idEspacoFisico"
+        ],
+        "properties": {
+          "nome": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 100
+          },
+          "descricao": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 200
+          },
+          "cargaHoraria": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "quantidadeDeSemestres": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "idInstituicao": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "idEspacoFisico": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          }
+        }
+      },
+      "CursoPatch": {
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "nome": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 100
+          },
+          "descricao": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 200
+          },
+          "cargaHoraria": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "quantidadeDeSemestres": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "idInstituicao": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "idEspacoFisico": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          }
+        }
+      },
+      "EspacoFisico": {
+        "type": "object",
+        "required": [
+          "id",
+          "nome",
+          "endereco",
+          "idInstituicao"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nome": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 100
+          },
+          "endereco": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "idInstituicao": {
+            "type": "integer"
+          }
+        }
+      },
+      "EspacoFisicoInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "nome",
+          "endereco",
+          "idInstituicao"
+        ],
+        "properties": {
+          "nome": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 100
+          },
+          "endereco": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "idInstituicao": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          }
+        }
+      },
+      "EspacoFisicoPatch": {
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "nome": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 100
+          },
+          "endereco": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "idInstituicao": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          }
+        }
+      },
+      "Instituicao": {
+        "type": "object",
+        "required": [
+          "id",
+          "nome",
+          "cnpj",
+          "dataDeFundacao"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nome": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 100
+          },
+          "cnpj": {
+            "type": "string",
+            "description": "CNPJ valido com 14 digitos sem pontuacao.",
+            "pattern": "^[0-9]{14}$"
+          },
+          "dataDeFundacao": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "InstituicaoInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "nome",
+          "cnpj",
+          "dataDeFundacao"
+        ],
+        "properties": {
+          "nome": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 100
+          },
+          "cnpj": {
+            "type": "string",
+            "description": "CNPJ valido com 14 digitos sem pontuacao.",
+            "pattern": "^[0-9]{14}$"
+          },
+          "dataDeFundacao": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "InstituicaoPatch": {
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "nome": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 100
+          },
+          "cnpj": {
+            "type": "string",
+            "pattern": "^[0-9]{14}$"
+          },
+          "dataDeFundacao": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Materia": {
+        "type": "object",
+        "required": [
+          "id",
+          "nome",
+          "descricao",
+          "cargaHoraria",
+          "obrigatoriedade",
+          "idCurso",
+          "idMateriaPreRequisito",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nome": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "descricao": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 200
+          },
+          "cargaHoraria": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "obrigatoriedade": {
+            "$ref": "#/components/schemas/Obrigatoriedade"
+          },
+          "idCurso": {
+            "type": "integer"
+          },
+          "idMateriaPreRequisito": {
+            "type": "integer",
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          }
+        }
+      },
+      "MateriaInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "nome",
+          "descricao",
+          "cargaHoraria",
+          "obrigatoriedade",
+          "idCurso"
+        ],
+        "properties": {
+          "nome": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "descricao": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 200
+          },
+          "cargaHoraria": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "obrigatoriedade": {
+            "$ref": "#/components/schemas/Obrigatoriedade"
+          },
+          "idCurso": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "idMateriaPreRequisito": {
+            "type": "integer",
+            "nullable": true,
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          }
+        }
+      },
+      "MateriaPatch": {
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "nome": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "descricao": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 200
+          },
+          "cargaHoraria": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "obrigatoriedade": {
+            "$ref": "#/components/schemas/Obrigatoriedade"
+          },
+          "idCurso": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "idMateriaPreRequisito": {
+            "type": "integer",
+            "nullable": true,
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          }
+        }
+      },
+      "Matricula": {
+        "type": "object",
+        "required": [
+          "id",
+          "idAluno",
+          "idCurso",
+          "dataMatricula",
+          "situacaoMatricula"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "idAluno": {
+            "type": "integer"
+          },
+          "idCurso": {
+            "type": "integer"
+          },
+          "dataMatricula": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "situacaoMatricula": {
+            "$ref": "#/components/schemas/SituacaoMatricula"
+          }
+        }
+      },
+      "MatriculaInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "idAluno",
+          "idCurso"
+        ],
+        "properties": {
+          "idAluno": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "idCurso": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "dataMatricula": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Opcional; padrao definido pelo servidor."
+          },
+          "situacaoMatricula": {
+            "$ref": "#/components/schemas/SituacaoMatricula"
+          }
+        }
+      },
+      "MatriculaPatch": {
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "idAluno": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "idCurso": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "dataMatricula": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "situacaoMatricula": {
+            "$ref": "#/components/schemas/SituacaoMatricula"
+          }
+        }
+      },
+      "Professor": {
+        "type": "object",
+        "required": [
+          "id",
+          "nome",
+          "cpf",
+          "dataDeNascimento",
+          "idInstituicao",
+          "dataContratacao",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nome": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "cpf": {
+            "type": "string",
+            "pattern": "^[0-9]{11}$"
+          },
+          "dataDeNascimento": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "idInstituicao": {
+            "type": "integer"
+          },
+          "dataContratacao": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          }
+        }
+      },
+      "ProfessorInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "nome",
+          "cpf",
+          "dataDeNascimento",
+          "idInstituicao",
+          "dataContratacao"
+        ],
+        "properties": {
+          "nome": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "cpf": {
+            "type": "string",
+            "description": "CPF valido com 11 digitos sem pontuacao.",
+            "pattern": "^[0-9]{11}$"
+          },
+          "dataDeNascimento": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Deve representar pessoa maior de 18 anos."
+          },
+          "idInstituicao": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "dataContratacao": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          }
+        }
+      },
+      "ProfessorPatch": {
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "nome": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "cpf": {
+            "type": "string",
+            "pattern": "^[0-9]{11}$"
+          },
+          "dataDeNascimento": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "idInstituicao": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "dataContratacao": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          }
+        }
+      },
+      "Turma": {
+        "type": "object",
+        "required": [
+          "id",
+          "idProfessor",
+          "idMateria",
+          "semestre",
+          "diaDaSemana",
+          "horaInicio",
+          "horaFim",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "idProfessor": {
+            "type": "integer"
+          },
+          "idMateria": {
+            "type": "integer"
+          },
+          "semestre": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[1-2]$",
+            "example": "2026-1"
+          },
+          "diaDaSemana": {
+            "$ref": "#/components/schemas/DiaDaSemana"
+          },
+          "horaInicio": {
+            "type": "string",
+            "description": "Horario local em HH:mm ou HH:mm:ss.",
+            "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9](?::[0-5][0-9](?:\\.[0-9]{1,6})?)?$"
+          },
+          "horaFim": {
+            "type": "string",
+            "description": "Horario local em HH:mm ou HH:mm:ss.",
+            "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9](?::[0-5][0-9](?:\\.[0-9]{1,6})?)?$"
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          }
+        }
+      },
+      "TurmaInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "idProfessor",
+          "idMateria",
+          "semestre",
+          "diaDaSemana",
+          "horaInicio",
+          "horaFim"
+        ],
+        "properties": {
+          "idProfessor": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "idMateria": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "semestre": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[1-2]$",
+            "example": "2026-1"
+          },
+          "diaDaSemana": {
+            "$ref": "#/components/schemas/DiaDaSemana"
+          },
+          "horaInicio": {
+            "type": "string",
+            "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9](?::[0-5][0-9](?:\\.[0-9]{1,6})?)?$"
+          },
+          "horaFim": {
+            "type": "string",
+            "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9](?::[0-5][0-9](?:\\.[0-9]{1,6})?)?$"
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          }
+        }
+      },
+      "TurmaPatch": {
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "idProfessor": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "idMateria": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "semestre": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[1-2]$"
+          },
+          "diaDaSemana": {
+            "$ref": "#/components/schemas/DiaDaSemana"
+          },
+          "horaInicio": {
+            "type": "string",
+            "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9](?::[0-5][0-9](?:\\.[0-9]{1,6})?)?$"
+          },
+          "horaFim": {
+            "type": "string",
+            "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9](?::[0-5][0-9](?:\\.[0-9]{1,6})?)?$"
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          }
+        }
+      },
+      "Usuario": {
+        "type": "object",
+        "description": "Representacao publica do usuario; senhaHash nao e exposto.",
+        "required": [
+          "id",
+          "nome",
+          "email",
+          "permissao",
+          "status",
+          "dataDeCriacao"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nome": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 100
+          },
+          "permissao": {
+            "$ref": "#/components/schemas/Permissao"
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          },
+          "dataDeCriacao": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "UsuarioInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "nome",
+          "email",
+          "senha",
+          "permissao"
+        ],
+        "properties": {
+          "nome": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 100
+          },
+          "senha": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 72,
+            "writeOnly": true
+          },
+          "permissao": {
+            "$ref": "#/components/schemas/Permissao"
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          }
+        }
+      },
+      "UsuarioPatch": {
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "nome": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 100
+          },
+          "senha": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 72,
+            "writeOnly": true
+          },
+          "permissao": {
+            "$ref": "#/components/schemas/Permissao"
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          }
+        }
+      }
+    }
+  }
+}
