@@ -1,7 +1,8 @@
 import type { NextFunction, Request, Response } from 'express'
-import jwt, { Jwt, JwtPayload } from 'jsonwebtoken'
-import { obterJwtSecret } from '../auth/authToken.ts'
+import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
 import type { Permissao } from '../models/TiposAuxiliares.ts'
+dotenv.config()
 
 export interface UsuarioAutenticado {
     id: number
@@ -27,7 +28,8 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction):
     }
 
     try {
-        const payload = jwt.verify(correspondencia[1], obterJwtSecret(), {
+        const payload = jwt.verify(correspondencia[1],
+            process.env.JWT_SECRET as string, {
             algorithms: ['HS256'],
         })
 

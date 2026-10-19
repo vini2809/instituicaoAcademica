@@ -17,6 +17,7 @@ import { permissionMiddleware } from '../middleware/permissionMiddleware.ts'
 export const routes = express.Router();
 
 routes.use('/auth', authRoutes);
+routes.use('/usuarios', usuarioRoutes);
 routes.use(authMiddleware);
 routes.use(permissionMiddleware);
 

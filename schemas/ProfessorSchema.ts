@@ -34,7 +34,7 @@ export const professorSchema = Joi.object({
         'any.required': 'Data é obrigatória',
 
     }),
-    idInstituicao: Joi.number().integer().min(1).max(2147483647).messages({
+    idInstituicao: Joi.number().integer().min(1).messages({
         'number.base': 'idInstituicao deve ser um número inteiro positivo',
         'number.integer': 'idInstituicao deve ser um número inteiro positivo',
         'number.min': 'idInstituicao deve ser um número inteiro positivo',

@@ -12,8 +12,6 @@ export class MatriculaService {
         private readonly cursoRepository: CursoRepository,
     ) {}
 
-    
-
     public async createMatricula(matricula: MatriculaInput): Promise<Matricula> {
         const validado = validarInput<MatriculaInput>(matriculaSchema, matricula);
 

@@ -13,25 +13,25 @@ export const cursoSchema = Joi.object({
         'string.max': 'Descrição deve ter no máximo 200 caracteres',
         'any.required': 'Descrição é obrigatória',
     }),
-    cargaHoraria: Joi.number().integer().min(1).max(2147483647).messages({
+    cargaHoraria: Joi.number().integer().min(1).messages({
         'number.base': 'Carga horária deve ser um número inteiro positivo',
         'number.integer': 'Carga horária deve ser um número número inteiro positivo',
         'number.min': 'Carga horária deve ser um número número inteiro positivo',
         'any.required': 'Carga horária é obrigatória',
     }),
-    quantidadeDeSemestres: Joi.number().integer().min(1).max(2147483647).messages({
+    quantidadeDeSemestres: Joi.number().integer().min(1).messages({
         'number.base': 'Quantidade de semestres deve ser um número inteiro positivo',
         'number.integer': 'Quantidade de semestres deve ser um número inteiro positivo',
         'number.min': 'Quantidade de semestres deve ser um número número inteiro positivo',
         'any.required': 'Quantidade de semestres é obrigatória',
     }),
-    idInstituicao: Joi.number().integer().min(1).max(2147483647).messages({
+    idInstituicao: Joi.number().integer().min(1).messages({
         'number.base': 'idInstituicao deve ser um número inteiro positivo',
         'number.integer': 'idInstituicao deve ser um número inteiro positivo',
         'number.min': 'idInstituicao deve ser um número número inteiro positivo',
         'any.required': 'idInstituicao é obrigatória',
     }),
-    idEspacoFisico: Joi.number().integer().min(1).max(2147483647).messages({
+    idEspacoFisico: Joi.number().integer().min(1).messages({
         'number.base': 'idEspacoFisico deve ser um número inteiro positivo',
         'number.integer': 'idEspacoFisico deve ser um número inteiro positivo',
         'number.min': 'idEspacoFisico deve ser um número número inteiro positivo',

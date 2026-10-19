@@ -1,13 +1,13 @@
 import Joi from 'joi'
 
 export const matriculaSchema = Joi.object({
-    idAluno: Joi.number().integer().min(1).max(2147483647).messages({
+    idAluno: Joi.number().integer().min(1).messages({
         'number.base': 'idAluno deve ser um número inteiro positivo',
         'number.integer': 'idAluno deve ser um número inteiro positivo',
         'number.min': 'idAluno deve ser um número inteiro positivo',
         'any.required': 'idAluno é obrigatório'
     }),
-    idCurso: Joi.number().integer().min(1).max(2147483647).messages({
+    idCurso: Joi.number().integer().min(1).messages({
         'number.base': 'idCurso deve ser um número inteiro positivo',
         'number.integer': 'idCurso deve ser um número inteiro positivo',
         'number.min': 'idCurso deve ser um número inteiro positivo',
