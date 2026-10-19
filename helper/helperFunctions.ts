@@ -21,6 +21,7 @@ export function handleError(res: Response, erro: unknown): Response {
     if (erro instanceof HttpError) {
         return res.status(erro.status).json({ error: erro.message })
     }
+    console.log(erro)
     return res.status(500).json({ error: 'Erro interno do servidor' })
 }
 

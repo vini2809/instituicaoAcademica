@@ -1,13 +1,13 @@
 import Joi from 'joi'
 
 export const turmaSchema = Joi.object({
-    idProfessor: Joi.number().integer().min(1).max(2147483647).messages({
+    idProfessor: Joi.number().integer().min(1).messages({
         'number.base': 'idProfessor deve ser um número inteiro positivo',
         'number.integer': 'idProfessor deve ser um número inteiro positivo',
         'number.min': 'idProfessor deve ser um número número inteiro positivo',
         'any.required': 'idProfessor é obrigatório'
         }),
-    idMateria: Joi.number().integer().min(1).max(2147483647).messages({
+    idMateria: Joi.number().integer().min(1).messages({
         'number.base': 'idMateria deve ser um número inteiro positivo',
         'number.integer': 'idMateria deve ser um número inteiro positivo',
         'number.min': 'idMateria deve ser um número número inteiro positivo',

@@ -13,7 +13,7 @@ export const materiaSchema = Joi.object({
         'string.max': 'Descrição deve ter no máximo 200 caracteres',
         'any.required': 'Descrição é obrigatória',
     }),
-    cargaHoraria: Joi.number().integer().min(1).max(2147483647).messages({
+    cargaHoraria: Joi.number().integer().min(1).messages({
         'number.base': 'Carga horária deve ser um número inteiro positivo',
         'number.integer': 'Carga horária deve ser um número número inteiro positivo',
         'number.min': 'Carga horária deve ser um número número inteiro positivo',
@@ -24,13 +24,13 @@ export const materiaSchema = Joi.object({
         'any.valid': "Obrigatoriedade deve ser 'obrigatorio' ou 'optativa'",
         'any.required': 'Obrigatoriedade é obrigatória',
     }),
-    idCurso: Joi.number().integer().min(1).max(2147483647).messages({
+    idCurso: Joi.number().integer().min(1).messages({
         'number.base': 'idCurso deve ser um número inteiro positivo',
         'number.integer': 'idCurso deve ser um número inteiro positivo',
         'number.min': 'idCurso deve ser um número número inteiro positivo',
         'any.required': 'idCurso é obrigatório',
     }),
-    idMateriaPreRequisito: Joi.number().integer().min(1).max(2147483647).allow(null).optional().messages({
+    idMateriaPreRequisito: Joi.number().integer().min(1).allow(null).optional().messages({
         'number.base': 'idMateriaPreRequisito deve ser um número inteiro positivo',
         'number.integer': 'idMateriaPreRequisito deve ser um número inteiro positivo',
         'number.min': 'idMateriaPreRequisito deve ser um número número inteiro positivo',
