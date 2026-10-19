@@ -10,53 +10,12 @@
       "url": "http://localhost:3000"
     }
   ],
-  "tags": [
-    {
-      "name": "Autenticacao"
-    },
-    {
-      "name": "Alunos"
-    },
-    {
-      "name": "Avaliacoes"
-    },
-    {
-      "name": "Cursos"
-    },
-    {
-      "name": "Espacos fisicos"
-    },
-    {
-      "name": "Instituicoes"
-    },
-    {
-      "name": "Materias"
-    },
-    {
-      "name": "Matriculas"
-    },
-    {
-      "name": "Professores"
-    },
-    {
-      "name": "Turmas"
-    },
-    {
-      "name": "Usuarios"
-    }
-  ],
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
   "paths": {
     "/auth": {
       "post": {
         "tags": [
           "Autenticacao"
         ],
-        "summary": "Iniciar sessao",
         "description": "Autentica usuario ativo e retorna um JWT.",
         "security": [],
         "requestBody": {
@@ -85,8 +44,7 @@
                   ],
                   "properties": {
                     "token": {
-                      "type": "string",
-                      "description": "JWT assinado com algoritmo HS256."
+                      "type": "string"
                     }
                   }
                 }
