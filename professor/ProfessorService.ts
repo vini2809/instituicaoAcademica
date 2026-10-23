@@ -6,8 +6,8 @@ import { ProfessorRepository } from './ProfessorRepository.ts'
 
 export class ProfessorService {
     constructor(
-        private readonly professorRepository: ProfessorRepository,
-        private readonly instituicaoRepository: InstituicaoRepository,
+        private professorRepository: ProfessorRepository,
+        private instituicaoRepository: InstituicaoRepository,
     ) {}
 
     public async createProfessor(professor: ProfessorInput): Promise<Professor> {
@@ -29,10 +29,10 @@ export class ProfessorService {
         return professor
     }
 
-    public async listProfessores(offset?: unknown, limit?: unknown): Promise<Professor[]> {
-        const paginacao = validarPaginacao(offset, limit);
+    public async listProfessores(limit?: unknown, page?: unknown): Promise<Professor[]> {
+        const paginacao = validarPaginacao(limit, page);
 
-        return this.professorRepository.listProfessores(paginacao.offset, paginacao.limit)
+        return this.professorRepository.listProfessores(paginacao.limit, paginacao.page)
     }
 
     public async updateProfessor(id: unknown, professor: ProfessorInput): Promise<void> {

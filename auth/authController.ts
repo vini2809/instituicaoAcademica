@@ -12,3 +12,13 @@ export const login = async (req: Request, res: Response) => {
         return handleError(res, erro)
     }
 }
+
+export const register = async (req: Request, res: Response) => {
+    try {
+        const usuario = await authService.register(req.body);
+
+        return res.status(201).json(usuario)
+    } catch (erro) {
+        return handleError(res, erro)
+    }
+}

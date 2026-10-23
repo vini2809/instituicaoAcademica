@@ -3,7 +3,7 @@ import { handleError } from '../helper/helperFunctions.ts'
 import { TurmaService } from './TurmaService.ts'
 
 export class TurmaController {
-    constructor(private readonly service: TurmaService) {}
+    constructor(private service: TurmaService) {}
 
     public async postTurma(req: Request, res: Response): Promise<Response> {
         try {
@@ -17,8 +17,8 @@ export class TurmaController {
 
     public async listTurma(req: Request, res: Response): Promise<Response> {
         try {
-            const { offset, limit } = req.query;
-            const turmas = await this.service.listTurmas(offset, limit)
+            const { limit, page } = req.query;
+            const turmas = await this.service.listTurmas(limit, page)
             
             return res.status(200).json(turmas)
         } catch (erro) {

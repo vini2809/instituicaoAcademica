@@ -23,7 +23,9 @@ export class AlunoRepository {
         return aluno
     }
 
-    public async listAlunos(offset: number, limit: number): Promise<Aluno[]> {
+    public async listAlunos(limit: number, page: number): Promise<Aluno[]> {
+        const offset = limit * (page - 1)
+        
         return await database<Aluno>('aluno')
             .select('*')
             .orderBy('id')

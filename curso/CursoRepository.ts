@@ -17,7 +17,8 @@ export class CursoRepository {
             .first()
     }
 
-    public async listCursos(offset: number, limit: number): Promise<Curso[]> {
+    public async listCursos(limit: number, page: number): Promise<Curso[]> {
+        const offset = limit * (page - 1)
         return database<Curso>('curso')
             .select('*')
             .orderBy('id')

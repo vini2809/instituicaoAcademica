@@ -2,8 +2,9 @@ import type { Request, Response } from 'express'
 import { handleError } from '../helper/helperFunctions.ts'
 import { UsuarioService } from './UsuarioService.ts'
 
+
 export class UsuarioController {
-    constructor(private readonly service: UsuarioService) {}
+    constructor(private service: UsuarioService) {}
 
     public async postUsuario(req: Request, res: Response): Promise<Response> {
         try {
@@ -17,8 +18,8 @@ export class UsuarioController {
 
     public async listUsuario(req: Request, res: Response): Promise<Response> {
         try {
-            const { offset, limit } = req.query;
-            const usuarios = await this.service.listUsuarios(offset, limit)
+            const { limit, page } = req.query;
+            const usuarios = await this.service.listUsuarios(limit, page)
 
             return res.status(200).json(usuarios)
         } catch (erro) {

@@ -5,6 +5,11 @@ export type Obrigatoriedade = 'obrigatorio' | 'optativa';
 export type DiaDaSemana = 'segunda-feira' | 'terça-feira' | 'quarta-feira' | 'quinta-feira' | 'sexta-feira' | 'sábado' | 'domingo';
 
 export interface Paginacao {
-    offset: number;
     limit: number;
+    page: number;
+}
+
+export interface Credenciais {
+    email: string
+    senha: string
 }

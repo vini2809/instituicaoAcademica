@@ -3,7 +3,7 @@ import { handleError } from '../helper/helperFunctions.ts'
 import { AvaliacaoService } from './AvaliacaoService.ts'
 
 export class AvaliacaoController {
-    constructor(private readonly avaliacaoService: AvaliacaoService) {}
+    constructor(private avaliacaoService: AvaliacaoService) {}
 
     public async postAvaliacao(req: Request, res: Response): Promise<Response> {
         try {
@@ -17,8 +17,8 @@ export class AvaliacaoController {
 
     public async listAvaliacao(req: Request, res: Response): Promise<Response> {
         try {
-            const { offset, limit  } = req.query;
-            const avaliacoes = await this.avaliacaoService.listAvaliacoes(offset, limit);
+            const { limit, page } = req.query;
+            const avaliacoes = await this.avaliacaoService.listAvaliacoes(limit, page);
             
             return res.status(200).json(avaliacoes)
         } catch (erro) {

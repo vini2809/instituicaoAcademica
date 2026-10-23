@@ -17,7 +17,9 @@ export class ProfessorRepository {
             .first()
     }
 
-    public async listProfessores(offset: number, limit: number): Promise<Professor[]> {
+    public async listProfessores(limit: number, page: number): Promise<Professor[]> {
+        const offset = limit * (page - 1)
+        
         return await database('professor')
             .select("*")
             .orderBy('id')

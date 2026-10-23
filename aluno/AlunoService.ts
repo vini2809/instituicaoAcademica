@@ -4,7 +4,7 @@ import { HttpError, validarInput, validarId, validarPaginacao } from '../helper/
 import { AlunoRepository } from './AlunoRepository.ts'
 
 export class AlunoService {
-    constructor(private readonly alunoRepository: AlunoRepository) {}
+    constructor(private alunoRepository: AlunoRepository) {}
 
     public async createAluno(aluno: AlunoInput): Promise<Aluno> {
         const alunoValidado = validarInput<AlunoInput>(alunoSchema, aluno);
@@ -25,10 +25,10 @@ export class AlunoService {
         return aluno;
     }
 
-    public async listAlunos(offset?: unknown, limit?: unknown): Promise<Aluno[]> {
-        const paginacao = validarPaginacao(offset, limit);
+    public async listAlunos(limit?: unknown, page?: unknown): Promise<Aluno[]> {
+        const paginacao = validarPaginacao(limit, page);
 
-        return this.alunoRepository.listAlunos(paginacao.offset, paginacao.limit)
+        return this.alunoRepository.listAlunos(paginacao.limit, paginacao.page)
     }
 
     public async updateAluno(id: unknown, aluno: AlunoInput): Promise<void> {

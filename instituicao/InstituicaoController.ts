@@ -3,7 +3,7 @@ import { handleError } from '../helper/helperFunctions.ts'
 import { InstituicaoService } from './InstituicaoService.ts';
 
 export class InstituicaoController {
-    constructor(private readonly instituicaoService: InstituicaoService) {}
+    constructor(private instituicaoService: InstituicaoService) {}
 
     public async postInstituicao(req: Request, res: Response): Promise<Response> {
         try {
@@ -17,8 +17,8 @@ export class InstituicaoController {
 
     public async listInstituicao(req: Request, res: Response): Promise<Response> {
         try {
-            const { offset, limit } = req.query
-            const instituicoes = await this.instituicaoService.listInstituicoes(offset, limit);
+            const { limit, page } = req.query
+            const instituicoes = await this.instituicaoService.listInstituicoes(limit, page);
 
             return res.status(200).json(instituicoes);
         } catch (erro) {
@@ -29,7 +29,6 @@ export class InstituicaoController {
     public async getInstituicao(req: Request, res: Response): Promise<Response> {
         try {
             const { id } = req.params;
-            
             const instituicao = await this.instituicaoService.getInstituicao(id);
 
             return res.status(200).json(instituicao);
@@ -41,7 +40,6 @@ export class InstituicaoController {
     public async patchInstituicao(req: Request, res: Response): Promise<Response> {
         try {
             const { id } = req.params;
-
             await this.instituicaoService.updateInstituicaoParcial(id, req.body);
 
             return res.sendStatus(204);

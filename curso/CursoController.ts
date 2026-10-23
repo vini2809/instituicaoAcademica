@@ -3,7 +3,7 @@ import { handleError } from '../helper/helperFunctions.ts'
 import { CursoService } from './CursoService.ts'
 
 export class CursoController {
-    constructor(private readonly service: CursoService) {}
+    constructor(private service: CursoService) {}
 
     public async postCurso(req: Request, res: Response): Promise<Response> {
         try {
@@ -17,8 +17,8 @@ export class CursoController {
 
     public async listCurso(req: Request, res: Response): Promise<Response> {
         try {
-            const { offset, limit } = req.query;
-            const cursos = await this.service.listCursos(offset, limit);
+            const { limit, page } = req.query;
+            const cursos = await this.service.listCursos(limit, page);
 
             return res.status(200).json(cursos)
         } catch (erro) {

@@ -7,9 +7,9 @@ import { AvaliacaoRepository } from './AvaliacaoRepository.ts'
 
 export class AvaliacaoService {
     constructor(
-        private readonly repository: AvaliacaoRepository,
-        private readonly alunoRepository: AlunoRepository,
-        private readonly turmaRepository: TurmaRepository,
+        private repository: AvaliacaoRepository,
+        private alunoRepository: AlunoRepository,
+        private turmaRepository: TurmaRepository,
     ) {}
 
     public async createAvaliacao(avaliacao: AvaliacaoInput): Promise<Avaliacao> {
@@ -28,10 +28,10 @@ export class AvaliacaoService {
         return avaliacao
     }
 
-    public async listAvaliacoes(offset?: unknown, limit?: unknown): Promise<Avaliacao[]> {
-        const paginacao = validarPaginacao(offset, limit);
+    public async listAvaliacoes(limit?: unknown, page?: unknown): Promise<Avaliacao[]> {
+        const paginacao = validarPaginacao(limit, page);
 
-        return this.repository.listAvaliacoes(paginacao.offset, paginacao.limit)
+        return this.repository.listAvaliacoes(paginacao.limit, paginacao.page)
     }
 
     public async updateAvaliacao(id: unknown, avaliacao: AvaliacaoInput): Promise<void> {

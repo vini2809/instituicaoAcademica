@@ -3,20 +3,26 @@
   "info": {
     "title": "API do Sistema Academico",
     "version": "1.0.0",
-    "description": "API REST para instituicoes, cursos, matriculas, usuarios e entidades academicas."
+    "description": "API REST para instituicoes, cursos, matriculas, usuarios e entidades academicas. Os endpoints protegidos exigem JWT Bearer: administradores podem executar todas as operacoes, alunos podem consultar (GET) e professores podem consultar tudo e alterar alunos, avaliacoes, materias e turmas."
   },
   "servers": [
     {
       "url": "http://localhost:3000"
     }
   ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
   "paths": {
-    "/auth": {
+    "/auth/login": {
       "post": {
         "tags": [
           "Autenticacao"
         ],
-        "description": "Autentica usuario ativo e retorna um JWT.",
+        "summary": "Autenticar usuario",
+        "description": "Autentica usuario ativo e retorna um JWT valido por uma hora.",
         "security": [],
         "requestBody": {
           "required": true,
@@ -70,6 +76,54 @@
         }
       }
     },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Autenticacao"
+        ],
+        "summary": "Cadastrar usuario",
+        "description": "Cadastra um usuario sem exigir autenticacao e retorna sua representacao publica, sem a senha.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsuarioInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuario cadastrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ErroValidacao"
+          },
+          "409": {
+            "description": "Ja existe usuario cadastrado com o e-mail informado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Erro"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/ErroInterno"
+          }
+        }
+      }
+    },
     "/alunos": {
       "get": {
         "tags": [
@@ -78,7 +132,7 @@
         "summary": "Listar alunos",
         "parameters": [
           {
-            "$ref": "#/components/parameters/offset"
+            "$ref": "#/components/parameters/page"
           },
           {
             "$ref": "#/components/parameters/limit"
@@ -351,7 +405,7 @@
         "summary": "Listar avaliacoes",
         "parameters": [
           {
-            "$ref": "#/components/parameters/offset"
+            "$ref": "#/components/parameters/page"
           },
           {
             "$ref": "#/components/parameters/limit"
@@ -604,7 +658,7 @@
         "summary": "Listar cursos",
         "parameters": [
           {
-            "$ref": "#/components/parameters/offset"
+            "$ref": "#/components/parameters/page"
           },
           {
             "$ref": "#/components/parameters/limit"
@@ -857,7 +911,7 @@
         "summary": "Listar espacos fisicos",
         "parameters": [
           {
-            "$ref": "#/components/parameters/offset"
+            "$ref": "#/components/parameters/page"
           },
           {
             "$ref": "#/components/parameters/limit"
@@ -1110,7 +1164,7 @@
         "summary": "Listar instituicoes",
         "parameters": [
           {
-            "$ref": "#/components/parameters/offset"
+            "$ref": "#/components/parameters/page"
           },
           {
             "$ref": "#/components/parameters/limit"
@@ -1383,7 +1437,7 @@
         "summary": "Listar materias",
         "parameters": [
           {
-            "$ref": "#/components/parameters/offset"
+            "$ref": "#/components/parameters/page"
           },
           {
             "$ref": "#/components/parameters/limit"
@@ -1636,7 +1690,7 @@
         "summary": "Listar matriculas",
         "parameters": [
           {
-            "$ref": "#/components/parameters/offset"
+            "$ref": "#/components/parameters/page"
           },
           {
             "$ref": "#/components/parameters/limit"
@@ -1889,7 +1943,7 @@
         "summary": "Listar professores",
         "parameters": [
           {
-            "$ref": "#/components/parameters/offset"
+            "$ref": "#/components/parameters/page"
           },
           {
             "$ref": "#/components/parameters/limit"
@@ -2172,7 +2226,7 @@
         "summary": "Listar turmas",
         "parameters": [
           {
-            "$ref": "#/components/parameters/offset"
+            "$ref": "#/components/parameters/page"
           },
           {
             "$ref": "#/components/parameters/limit"
@@ -2425,7 +2479,7 @@
         "summary": "Listar usuarios",
         "parameters": [
           {
-            "$ref": "#/components/parameters/offset"
+            "$ref": "#/components/parameters/page"
           },
           {
             "$ref": "#/components/parameters/limit"
@@ -2711,26 +2765,25 @@
           "maximum": 2147483647
         }
       },
-      "offset": {
-        "name": "offset",
+      "page": {
+        "name": "page",
         "in": "query",
         "required": false,
-        "description": "Quantidade de registros a ignorar.",
+        "description": "Numero da pagina solicitada.",
         "schema": {
           "type": "integer",
-          "minimum": 0,
-          "maximum": 2147483647,
-          "default": 0
+          "minimum": 1,
+          "default": 1
         }
       },
       "limit": {
         "name": "limit",
         "in": "query",
         "required": false,
-        "description": "Maximo de registros retornados.",
+        "description": "Quantidade maxima de registros retornados por pagina.",
         "schema": {
           "type": "integer",
-          "minimum": 1,
+          "minimum": 0,
           "maximum": 100,
           "default": 20
         }
@@ -2802,10 +2855,12 @@
           "email": {
             "type": "string",
             "format": "email",
-            "maxLength": 100
+            "description": "O e-mail e convertido para minusculas antes da autenticacao."
           },
           "senha": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "writeOnly": true
           }
         }
       },

@@ -6,8 +6,8 @@ import { MateriaRepository } from './MateriaRepository.ts'
 
 export class MateriaService {
     constructor(
-        private readonly repository: MateriaRepository,
-        private readonly cursoRepository: CursoRepository,
+        private repository: MateriaRepository,
+        private cursoRepository: CursoRepository,
     ) {}
 
     public async createMateria(materia: MateriaInput): Promise<Materia> {
@@ -26,10 +26,10 @@ export class MateriaService {
         return materia
     }
 
-    public async listMaterias(offset?: unknown, limit?: unknown): Promise<Materia[]> {
-        const paginacao = validarPaginacao(offset, limit);
+    public async listMaterias(limit?: unknown, page?: unknown): Promise<Materia[]> {
+        const paginacao = validarPaginacao(limit, page);
 
-        return this.repository.listMaterias(paginacao.offset, paginacao.limit)
+        return this.repository.listMaterias(paginacao.limit, paginacao.page)
     }
 
     public async updateMateria(id: unknown, materia: MateriaInput): Promise<void> {

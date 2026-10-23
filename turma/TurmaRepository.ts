@@ -17,7 +17,9 @@ export class TurmaRepository {
             .first()
     }
 
-    public async listTurmas(offset: number, limit: number): Promise<Turma[]> {
+    public async listTurmas(limit: number, page: number): Promise<Turma[]> {
+        const offset = limit * (page - 1)
+        
         return database<Turma>('turma')
             .select('*')
             .orderBy('id')

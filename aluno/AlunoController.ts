@@ -20,8 +20,8 @@ export class AlunoController {
 
     public async listAluno(req: Request, res: Response): Promise<Response> {
         try {
-            const { offset, limit} = req.query;
-            const alunos = await this.alunoService.listAlunos(offset, limit);
+            const { limit, page} = req.query;
+            const alunos = await this.alunoService.listAlunos(limit, page);
 
             return res.status(200).json(alunos)
         } catch (erro) {

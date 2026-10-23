@@ -8,7 +8,7 @@ import { idSchema } from '../schemas/idSchema.ts'
 moment().format()
 
 export class HttpError extends Error {
-    public readonly status: number
+    public status: number
 
     constructor(status: number, message: string) {
         super(message)
@@ -56,9 +56,10 @@ export function validarId(input: unknown): number {
     return value
 }
 
-export function validarPaginacao(offset: unknown, limit: unknown): Paginacao {
+export function validarPaginacao(limit: unknown, page: unknown): Paginacao {
     const {error, value} = paginacaoSchema.validate(
-        { offset: offset ?? 0, limit: limit ?? 20 },
+        {   limit: limit ?? 20, 
+            page: page ?? 1 },
         { abortEarly: false, convert: true },
     )
 

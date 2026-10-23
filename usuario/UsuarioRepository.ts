@@ -23,7 +23,9 @@ export class UsuarioRepository {
             .first()
     }
 
-    public async listUsuarios(offset: number, limit: number): Promise<UsuarioPublico[]> {
+    public async listUsuarios(limit: number, page: number): Promise<UsuarioPublico[]> {
+        const offset = limit * (page - 1)
+        
         return database<Usuario>('usuario')
             .select(...colunasPublicas)
             .orderBy('id')

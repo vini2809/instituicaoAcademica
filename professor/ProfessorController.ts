@@ -5,7 +5,7 @@ import { ProfessorService } from './ProfessorService.ts';
 import type {Professor} from '../models/ProfessorModel.ts'
 
 export class ProfessorController {
-    constructor(private readonly professorService: ProfessorService) {}
+    constructor(private professorService: ProfessorService) {}
 
     public async postProfessor(req: Request, res: Response): Promise<Response> {
         try {
@@ -19,8 +19,8 @@ export class ProfessorController {
 
     public async listProfessor(req: Request, res: Response): Promise<Response> {
         try {
-            const { offset, limit } = req.query;
-            const professores = await this.professorService.listProfessores(offset, limit);
+            const { limit, page } = req.query;
+            const professores = await this.professorService.listProfessores(limit, page);
 
             return res.status(200).json(professores);
         } catch (erro) {

@@ -6,8 +6,8 @@ import { EspacoFisicoRepository } from './EspacoFisicoRepository.ts'
 
 export class EspacoFisicoService {
     constructor(
-        private readonly repository: EspacoFisicoRepository,
-        private readonly instituicaoRepository: InstituicaoRepository,
+        private repository: EspacoFisicoRepository,
+        private instituicaoRepository: InstituicaoRepository,
     ) {}
 
     public async createEspacoFisico(espacoFisico: EspacoFisicoInput): Promise<EspacoFisico> {
@@ -26,10 +26,10 @@ export class EspacoFisicoService {
         return espaco
     }
 
-    public async listEspacosFisicos(offset?: unknown, limit?: unknown): Promise<EspacoFisico[]> {
-        const paginacao = validarPaginacao(offset, limit);
+    public async listEspacosFisicos(limit?: unknown, page?: unknown): Promise<EspacoFisico[]> {
+        const paginacao = validarPaginacao(limit, page);
 
-        return this.repository.listEspacosFisicos(paginacao.offset, paginacao.limit)
+        return this.repository.listEspacosFisicos(paginacao.limit, paginacao.page)
     }
 
     public async updateEspacoFisico(id: unknown, espacoFisico: EspacoFisicoInput): Promise<void> {

@@ -4,7 +4,7 @@ import { instituicaoSchema } from '../schemas/InstituicaoSchema.ts'
 import { InstituicaoRepository } from './InstituicaoRepository.ts'
 
 export class InstituicaoService {
-    constructor(private readonly instituicaoRepository: InstituicaoRepository) {}
+    constructor(private instituicaoRepository: InstituicaoRepository) {}
 
     public async createInstituicao(instituicao: InstituicaoInput): Promise<Instituicao> {
         const validada = validarInput<InstituicaoInput>(instituicaoSchema, instituicao);
@@ -24,10 +24,10 @@ export class InstituicaoService {
         return instituicao
     }
 
-    public async listInstituicoes(offset?: unknown, limit?: unknown): Promise<Instituicao[]> {
-        const paginacao = validarPaginacao(offset, limit);
+    public async listInstituicoes(limit?: unknown, page?: unknown): Promise<Instituicao[]> {
+        const paginacao = validarPaginacao(limit, page);
 
-        return this.instituicaoRepository.listInstituicoes(paginacao.offset, paginacao.limit)
+        return this.instituicaoRepository.listInstituicoes(paginacao.limit, paginacao.page)
     }
 
     public async updateInstituicao(id: unknown, instituicao: InstituicaoInput): Promise<void> {

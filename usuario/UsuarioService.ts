@@ -7,7 +7,7 @@ import { UsuarioRepository } from './UsuarioRepository.ts'
 const RODADAS_BCRYPT = 12
 
 export class UsuarioService {
-    constructor(private readonly repository: UsuarioRepository) {}
+    constructor(private repository: UsuarioRepository) {}
 
     public async createUsuario(usuario: UsuarioInput): Promise<UsuarioPublico> {
         const usuarioValidado = validarInput<UsuarioInput>(usuarioSchema, usuario);
@@ -37,10 +37,10 @@ export class UsuarioService {
         return usuario
     }
 
-    public async listUsuarios(offset?: unknown, limit?: unknown): Promise<UsuarioPublico[]> {
-        const paginacao = validarPaginacao(offset, limit);
+    public async listUsuarios(limit?: unknown, page?: unknown): Promise<UsuarioPublico[]> {
+        const paginacao = validarPaginacao(limit, page);
 
-        return this.repository.listUsuarios(paginacao.offset, paginacao.limit)
+        return this.repository.listUsuarios(paginacao.limit, paginacao.page)
     }
 
     public async updateUsuario(id: unknown, usuario: UsuarioInput): Promise<void> {

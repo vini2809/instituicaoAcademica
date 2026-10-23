@@ -7,9 +7,9 @@ import { CursoRepository } from './CursoRepository.ts'
 
 export class CursoService {
     constructor(
-        private readonly repository: CursoRepository,
-        private readonly instituicaoRepository: InstituicaoRepository,
-        private readonly espacoFisicoRepository: EspacoFisicoRepository,
+        private repository: CursoRepository,
+        private instituicaoRepository: InstituicaoRepository,
+        private espacoFisicoRepository: EspacoFisicoRepository,
     ) {}
 
     
@@ -30,10 +30,10 @@ export class CursoService {
         return curso;
     }
 
-    public async listCursos(offset?: unknown, limit?: unknown): Promise<Curso[]> {
-        const paginacao = validarPaginacao(offset, limit);
+    public async listCursos(limit?: unknown, page?: unknown): Promise<Curso[]> {
+        const paginacao = validarPaginacao(limit, page);
 
-        return this.repository.listCursos(paginacao.offset, paginacao.limit);
+        return this.repository.listCursos(paginacao.limit, paginacao.page);
     }
 
     public async updateCurso(id: unknown, curso: CursoInput): Promise<void> {

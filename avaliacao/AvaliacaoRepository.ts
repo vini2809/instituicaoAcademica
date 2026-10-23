@@ -17,7 +17,8 @@ export class AvaliacaoRepository {
             .first()
     }
 
-    public async listAvaliacoes(offset: number, limit: number): Promise<Avaliacao[]> {
+    public async listAvaliacoes(limit: number, page: number): Promise<Avaliacao[]> {
+        const offset = limit * (page - 1)
         return database<Avaliacao>('avaliacao')
             .select('*')
             .orderBy('id')

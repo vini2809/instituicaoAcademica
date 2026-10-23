@@ -3,7 +3,7 @@ import { handleError } from '../helper/helperFunctions.ts'
 import { EspacoFisicoService } from './EspacoFisicoService.ts'
 
 export class EspacoFisicoController {
-    constructor(private readonly service: EspacoFisicoService) {}
+    constructor(private service: EspacoFisicoService) {}
 
     public async postEspacoFisico(req: Request, res: Response): Promise<Response> {
         try {
@@ -17,8 +17,8 @@ export class EspacoFisicoController {
 
     public async listEspacoFisico(req: Request, res: Response): Promise<Response> {
         try {
-            const { offset, limit } = req.query
-            const espacosFisicos = await this.service.listEspacosFisicos(offset, limit);
+            const { limit, page } = req.query
+            const espacosFisicos = await this.service.listEspacosFisicos(limit, page);
 
             return res.status(200).json(espacosFisicos)
         } catch (erro) {

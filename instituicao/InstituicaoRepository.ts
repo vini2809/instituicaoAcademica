@@ -17,7 +17,9 @@ export class InstituicaoRepository {
             .first()
     }
 
-    public async listInstituicoes(offset: number, limit: number): Promise<Instituicao[]> {
+    public async listInstituicoes(limit: number, page: number): Promise<Instituicao[]> {
+        const offset = limit * (page - 1)
+        
         return await database<Instituicao>('instituicao')
             .select("*")
             .orderBy('id')

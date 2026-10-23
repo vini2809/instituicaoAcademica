@@ -9,7 +9,7 @@ export interface UsuarioAutenticado {
     permissao: Permissao
 }
 
-// adiciona 'usuarioAutenticado' no Request do express para depois de validar a autenticação
+// adiciona 'usuarioAutenticado' no Request do express para depois de validar a permissão
 declare global {
     namespace Express {
         interface Request {
@@ -42,6 +42,7 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction):
             id: Number(payload.sub),
             permissao: payload.permissao,
         }
+        
         next()
     } catch (erro) {
         if (erro instanceof jwt.JsonWebTokenError) {

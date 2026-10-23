@@ -16,7 +16,8 @@ export class EspacoFisicoRepository {
             .first()
     }
 
-    public async listEspacosFisicos(offset: number, limit: number): Promise<EspacoFisico[]> {
+    public async listEspacosFisicos(limit: number, page: number): Promise<EspacoFisico[]> {
+        const offset = limit * (page - 1)
         return database<EspacoFisico>('espaco_fisico')
             .select('*')
             .orderBy('id')

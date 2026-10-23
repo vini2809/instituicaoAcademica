@@ -17,7 +17,9 @@ export class MatriculaRepository {
             .first()
     }
 
-    public async listMatriculas(offset: number, limit: number): Promise<Matricula[]> {
+    public async listMatriculas(limit: number, page: number): Promise<Matricula[]> {
+        const offset = limit * (page - 1)
+        
         return database<Matricula>('matricula')
             .select('*')
             .orderBy('id')

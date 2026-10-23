@@ -7,9 +7,9 @@ import { TurmaRepository } from './TurmaRepository.ts'
 
 export class TurmaService {
     constructor(
-        private readonly repository: TurmaRepository,
-        private readonly professorRepository: ProfessorRepository,
-        private readonly materiaRepository: MateriaRepository,
+        private repository: TurmaRepository,
+        private professorRepository: ProfessorRepository,
+        private materiaRepository: MateriaRepository,
     ) {}
 
 
@@ -29,10 +29,10 @@ export class TurmaService {
         return turma
     }
 
-    public async listTurmas(offset?: unknown, limit?: unknown): Promise<Turma[]> {
-        const paginacao = validarPaginacao(offset, limit);
+    public async listTurmas(limit?: unknown, page?: unknown): Promise<Turma[]> {
+        const paginacao = validarPaginacao(limit, page);
 
-        return this.repository.listTurmas(paginacao.offset, paginacao.limit)
+        return this.repository.listTurmas(paginacao.limit, paginacao.page)
     }
 
     public async updateTurma(id: unknown, turma: TurmaInput): Promise<void> {

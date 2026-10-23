@@ -1,6 +1,6 @@
 import express from 'express';
 
-import {alunoRoutes} from '../aluno/AlunoRoutes.ts'
+import { alunoRoutes } from '../aluno/AlunoRoutes.ts'
 import { authRoutes } from '../auth/authRoutes.ts'
 import { avaliacaoRoutes } from '../avaliacao/AvaliacaoRoutes.ts';
 import { cursoRoutes } from '../curso/CursoRoutes.ts';
@@ -16,11 +16,14 @@ import { permissionMiddleware } from '../middleware/permissionMiddleware.ts'
 
 export const routes = express.Router();
 
+// /auth é a única rota sem middlewares de autenticação ou permissão
 routes.use('/auth', authRoutes);
-routes.use('/usuarios', usuarioRoutes);
+
+// adicionando os middlewares de autenticação e permissão a todas as outras rotas
 routes.use(authMiddleware);
 routes.use(permissionMiddleware);
 
+routes.use('/usuarios', usuarioRoutes);
 routes.use('/alunos', alunoRoutes);
 routes.use('/avaliacoes', avaliacaoRoutes);
 routes.use('/cursos', cursoRoutes);

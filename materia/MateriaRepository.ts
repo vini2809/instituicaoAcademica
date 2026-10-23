@@ -17,7 +17,9 @@ export class MateriaRepository {
             .first()
     }
 
-    public async listMaterias(offset: number, limit: number): Promise<Materia[]> {
+    public async listMaterias(limit: number, page: number): Promise<Materia[]> {
+        const offset = limit * (page - 1)
+        
         return database<Materia>('materia')
             .select('*')
             .orderBy('id')

@@ -7,9 +7,9 @@ import { MatriculaRepository } from './MatriculaRepository.ts'
 
 export class MatriculaService {
     constructor(
-        private readonly repository: MatriculaRepository,
-        private readonly alunoRepository: AlunoRepository,
-        private readonly cursoRepository: CursoRepository,
+        private repository: MatriculaRepository,
+        private alunoRepository: AlunoRepository,
+        private cursoRepository: CursoRepository,
     ) {}
 
     public async createMatricula(matricula: MatriculaInput): Promise<Matricula> {
@@ -28,10 +28,10 @@ export class MatriculaService {
         return matricula
     }
 
-    public async listMatriculas(offset?: unknown, limit?: unknown): Promise<Matricula[]> {
-        const paginacao = validarPaginacao(offset, limit);
+    public async listMatriculas(limit?: unknown, page?: unknown): Promise<Matricula[]> {
+        const paginacao = validarPaginacao(limit, page);
 
-        return this.repository.listMatriculas(paginacao.offset, paginacao.limit)
+        return this.repository.listMatriculas(paginacao.limit, paginacao.page)
     }
 
     public async updateMatricula(id: unknown, matricula: MatriculaInput): Promise<void> {
